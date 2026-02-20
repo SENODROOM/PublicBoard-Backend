@@ -3,49 +3,45 @@ const mongoose = require('mongoose');
 const issueSchema = new mongoose.Schema({
   title: {
     type: String,
-    required: [true, 'Title is required'],
+    required: true,
     trim: true,
-    maxlength: [200, 'Title cannot be more than 200 characters']
+    maxlength: 200
   },
   description: {
     type: String,
-    required: [true, 'Description is required'],
-    trim: true,
-    maxlength: [2000, 'Description cannot be more than 2000 characters']
+    required: true,
+    maxlength: 2000
   },
   category: {
     type: String,
-    required: [true, 'Category is required'],
-    enum: {
-      values: ['Infrastructure', 'Community Resources', 'Personal Concern', 'Other'],
-      message: '{VALUE} is not a valid category'
-    }
+    required: true,
+    enum: ['Infrastructure', 'Safety', 'Sanitation', 'Community Resources', 'Environment', 'Transportation', 'Other']
   },
   location: {
     type: String,
-    trim: true,
-    maxlength: [200, 'Location cannot be more than 200 characters']
+    required: true,
+    trim: true
   },
   status: {
     type: String,
-    enum: {
-      values: ['Open', 'In Progress', 'Pending Review', 'Resolved'],
-      message: '{VALUE} is not a valid status'
-    },
+    enum: ['Open', 'In Progress', 'Pending Review', 'Resolved'],
     default: 'Open'
   },
-  reporterName: {
-    type: String,
-    required: [true, 'Reporter name is required'],
-    trim: true,
-    maxlength: [100, 'Reporter name cannot be more than 100 characters']
-  }
-}, {
-  timestamps: true // Adds createdAt and updatedAt automatically
-});
-
-// Index for efficient querying
-issueSchema.index({ status: 1, createdAt: -1 });
-issueSchema.index({ category: 1 });
+  reporter: {
+    name: { type: String, required: true },
+    email: { type: String, required: true },
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null }
+  },
+  supporters: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+  supportCount: { type: Number, default: 0 },
+  images: [String],
+  updates: [{
+    message: String,
+    status: String,
+    updatedBy: String,
+    updatedAt: { type: Date, default: Date.now }
+  }],
+  resolvedAt: Date
+}, { timestamps: true });
 
 module.exports = mongoose.model('Issue', issueSchema);

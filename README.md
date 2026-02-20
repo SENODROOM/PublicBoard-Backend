@@ -1,299 +1,296 @@
-# PublicBoard Backend 🚀
+# PublicBoard — Backend API
 
-The RESTful API server for PublicBoard - A community issue reporting platform. Built with Node.js, Express.js, and MongoDB.
-
-## 📋 Overview
-
-This backend provides a robust API for managing community issues, including CRUD operations, authentication, and data persistence. It's designed to be scalable, secure, and easy to maintain.
-
-## 🛠️ Tech Stack
-
-- **Node.js** - JavaScript runtime environment
-- **Express.js** - Fast, unopinionated web framework
-- **MongoDB** - NoSQL database for flexible data storage
-- **Mongoose** - Elegant MongoDB object modeling for Node.js
-- **CORS** - Cross-Origin Resource Sharing middleware
-- **dotenv** - Environment variable management
-- **nodemon** - Development utility that auto-restarts the server
-
-## 📦 Installation
-
-### Prerequisites
-- Node.js (v16 or higher)
-- MongoDB (optional - can run in demo mode)
-
-### Setup Instructions
-
-1. **Navigate to the backend directory**
-   ```bash
-   cd backend
-   ```
-
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
-
-3. **Set up environment variables**
-   
-   Create a `.env` file in the root of the backend directory:
-   ```env
-   # Server Configuration
-   PORT=5000
-   NODE_ENV=development
-   
-   # Database Configuration
-   MONGODB_URI=mongodb://localhost:27017/publicboard
-   
-   # Security (optional)
-   JWT_SECRET=your-super-secret-jwt-key
-   ```
-
-4. **Start the development server**
-   ```bash
-   npm run dev
-   ```
-
-   For production:
-   ```bash
-   npm start
-   ```
-
-## 🗂️ Project Structure
-
-```
-backend/
-├── config/
-│   └── db.js              # Database connection configuration
-├── controllers/
-│   └── issues.js          # Issue-related business logic
-├── models/
-│   └── Issue.js           # MongoDB Issue model/schema
-├── routes/
-│   └── issues.js          # Issue API routes
-├── utils/
-│   └── errorHandler.js    # Error handling utilities
-├── .env                   # Environment variables (create this)
-├── .gitignore            # Git ignore file
-├── package.json          # Dependencies and scripts
-├── server.js             # Main server entry point
-└── README.md             # This file
-```
-
-## 🔌 API Endpoints
-
-### Issues Management
-
-| Method | Endpoint | Description | Authentication |
-|--------|----------|-------------|----------------|
-| GET | `/api/issues` | Get all issues | Public |
-| GET | `/api/issues/:id` | Get specific issue by ID | Public |
-| POST | `/api/issues` | Create new issue | Public |
-| PUT | `/api/issues/:id` | Update issue | Admin |
-| DELETE | `/api/issues/:id` | Delete issue | Admin |
-
-### System
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/health` | Health check and server status |
-
-### Example API Calls
-
-**Get all issues:**
-```bash
-curl http://localhost:5000/api/issues
-```
-
-**Create a new issue:**
-```bash
-curl -X POST http://localhost:5000/api/issues \
-  -H "Content-Type: application/json" \
-  -d '{
-    "title": "Broken Streetlight",
-    "description": "Streetlight at main intersection is not working",
-    "location": "Main St & Oak Ave",
-    "category": "Infrastructure",
-    "priority": "High"
-  }'
-```
-
-**Get specific issue:**
-```bash
-curl http://localhost:5000/api/issues/64a1b2c3d4e5f6789012345
-```
-
-## 🗄️ Database Schema
-
-### Issue Model
-
-```javascript
-{
-  _id: ObjectId,
-  title: String,           // Issue title
-  description: String,      // Detailed description
-  location: String,         // Location of the issue
-  category: String,         // Issue category (Infrastructure, Safety, etc.)
-  priority: String,         // Priority level (Low, Medium, High)
-  status: String,          // Current status (Open, In Progress, Resolved)
-  reportedBy: String,      // Name of reporter
-  contactInfo: String,      // Contact information
-  createdAt: Date,         // Creation timestamp
-  updatedAt: Date,         // Last update timestamp
-  resolvedAt: Date         // Resolution timestamp (if applicable)
-}
-```
-
-## 🔧 Configuration
-
-### Database Connection
-
-The application supports both MongoDB and in-memory demo mode:
-
-- **MongoDB Mode**: Full persistence with MongoDB
-- **Demo Mode**: In-memory storage for development/testing
-
-The server automatically falls back to demo mode if MongoDB is unavailable.
-
-### Environment Variables
-
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `PORT` | Server port | 5000 |
-| `NODE_ENV` | Environment mode | development |
-| `MONGODB_URI` | MongoDB connection string | mongodb://localhost:27017/publicboard |
-| `JWT_SECRET` | JWT signing secret | (auto-generated) |
-
-## 🧪 Development
-
-### Running Tests
-```bash
-npm test
-```
-
-### Development Mode
-```bash
-npm run dev
-```
-This starts the server with nodemon for auto-restart on file changes.
-
-### Linting
-```bash
-npm run lint
-```
-
-## 🚀 Deployment
-
-### Production Build
-
-1. **Set production environment variables**
-   ```env
-   NODE_ENV=production
-   MONGODB_URI=mongodb://your-production-db
-   ```
-
-2. **Install production dependencies**
-   ```bash
-   npm ci --only=production
-   ```
-
-3. **Start the server**
-   ```bash
-   npm start
-   ```
-
-### Docker Deployment
-
-Create a `Dockerfile`:
-```dockerfile
-FROM node:18-alpine
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci --only=production
-COPY . .
-EXPOSE 5000
-CMD ["npm", "start"]
-```
-
-Build and run:
-```bash
-docker build -t publicboard-backend .
-docker run -p 5000:5000 publicboard-backend
-```
-
-## 🔒 Security Features
-
-- **CORS Configuration**: Cross-origin requests properly configured
-- **Input Validation**: Request data validation and sanitization
-- **Error Handling**: Secure error responses without information leakage
-- **Environment Variables**: Sensitive data stored in environment variables
-
-## 📝 Logging
-
-The application includes comprehensive logging:
-- Request logging
-- Error logging
-- Database connection status
-- Development vs production log levels
-
-## 🤝 Contributing to Backend
-
-We welcome contributions! Here's how to get started:
-
-1. **Fork the repository**
-2. **Create a feature branch**
-   ```bash
-   git checkout -b feature/your-feature
-   ```
-3. **Make your changes**
-4. **Add tests for new functionality**
-5. **Ensure all tests pass**
-6. **Submit a pull request**
-
-### Backend Development Guidelines
-
-- Follow RESTful API design principles
-- Use meaningful HTTP status codes
-- Validate all input data
-- Handle errors gracefully
-- Write comprehensive tests
-- Document new endpoints
-- Follow existing code style
-
-## 🐛 Troubleshooting
-
-### Common Issues
-
-**MongoDB Connection Failed:**
-- Ensure MongoDB is running
-- Check connection string in `.env`
-- Verify network connectivity
-
-**Port Already in Use:**
-```bash
-# Find process using port 5000
-lsof -i :5000
-# Kill the process
-kill -9 <PID>
-```
-
-**Dependencies Issues:**
-```bash
-# Clear npm cache
-npm cache clean --force
-# Delete node_modules and reinstall
-rm -rf node_modules package-lock.json
-npm install
-```
-
-## 📞 Support
-
-For backend-specific issues:
-
-1. Check the [troubleshooting section](#-troubleshooting)
-2. Search existing [GitHub issues](https://github.com/yourusername/PublicBoard/issues)
-3. Create a new issue with detailed information
+> Express.js + MongoDB REST API powering the PublicBoard community platform.
 
 ---
 
-**Built with ❤️ for the PublicBoard community**
+## 🚀 Quick Start
+
+```bash
+cd server
+cp .env.example .env   # or use the provided .env
+npm install
+npm run dev            # nodemon — auto-restarts on change
+# Server runs on http://localhost:5000
+```
+
+---
+
+## 📁 Project Structure
+
+```
+server/
+├── index.js                  # App entry — Express setup, DB connect, routes
+├── .env                      # Environment variables (gitignore this!)
+├── .env.example              # Template
+├── package.json
+├── models/
+│   ├── Issue.js              # Issue schema & model
+│   ├── User.js               # User schema + password hashing
+│   └── Donation.js           # Donation schema
+├── routes/
+│   ├── auth.js               # POST /register, POST /login, GET /me
+│   ├── issues.js             # Full CRUD + support + status update
+│   ├── donations.js          # Donation CRUD + stats
+│   └── admin.js              # Protected admin-only routes
+└── middleware/
+    └── auth.js               # JWT protect + adminOnly guards
+```
+
+---
+
+## ⚙️ Environment Variables
+
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `MONGODB_URI` | MongoDB connection string | `mongodb+srv://user:pass@cluster.mongodb.net/` |
+| `JWT_SECRET` | Secret key for signing JWTs | Long random string |
+| `PORT` | Port to run the server on | `5000` |
+| `STRIPE_SECRET_KEY` | Stripe secret for payments | `sk_test_...` or `rk_test_...` |
+
+> ⚠️ **Never commit your `.env` file.** It contains secrets.
+
+---
+
+## 🔌 API Reference
+
+### Authentication — `/api/auth`
+
+| Method | Endpoint | Auth | Description |
+|--------|----------|------|-------------|
+| POST | `/api/auth/register` | Public | Register new user |
+| POST | `/api/auth/login` | Public | Login and receive JWT |
+| GET | `/api/auth/me` | JWT | Get current user profile |
+
+**Register body:**
+```json
+{ "name": "Jane Doe", "email": "jane@example.com", "password": "secret123" }
+```
+
+**Login response:**
+```json
+{ "token": "eyJ...", "user": { "id": "...", "name": "Jane", "email": "...", "role": "user" } }
+```
+
+**Using the token:** Add `Authorization: Bearer <token>` header to protected requests.
+
+---
+
+### Issues — `/api/issues`
+
+| Method | Endpoint | Auth | Description |
+|--------|----------|------|-------------|
+| GET | `/api/issues` | Public | List all issues (filterable) |
+| GET | `/api/issues/stats` | Public | Issue count by status |
+| GET | `/api/issues/:id` | Public | Get single issue |
+| POST | `/api/issues` | Public | Create new issue |
+| POST | `/api/issues/:id/support` | JWT | Toggle support (upvote) |
+| PATCH | `/api/issues/:id/status` | JWT | Update status + add message |
+| DELETE | `/api/issues/:id` | Admin | Delete issue |
+
+**Query parameters for GET /api/issues:**
+| Param | Type | Description |
+|-------|------|-------------|
+| `status` | string | Filter: `Open`, `In Progress`, `Pending Review`, `Resolved` |
+| `category` | string | Filter by category |
+| `search` | string | Full-text search (title, description, location) |
+| `sort` | string | Sort field. Default: `-createdAt` (newest first) |
+
+**Create issue body:**
+```json
+{
+  "title": "Broken streetlight on Oak Ave",
+  "description": "The streetlight has been out for 3 days...",
+  "category": "Infrastructure",
+  "location": "Oak Ave & 5th St",
+  "reporter": { "name": "John Smith", "email": "john@example.com", "userId": null }
+}
+```
+
+**Update status body:**
+```json
+{ "status": "In Progress", "message": "City crew dispatched, expected repair Friday." }
+```
+
+**Issue Categories:**
+`Infrastructure` | `Safety` | `Sanitation` | `Community Resources` | `Environment` | `Transportation` | `Other`
+
+**Issue Statuses:**
+`Open` → `In Progress` → `Pending Review` → `Resolved`
+
+---
+
+### Donations — `/api/donations`
+
+| Method | Endpoint | Auth | Description |
+|--------|----------|------|-------------|
+| GET | `/api/donations` | Public | List completed donations (anonymous names hidden) |
+| GET | `/api/donations/stats` | Public | Total raised + donation count |
+| POST | `/api/donations` | Public | Submit a donation |
+
+**Create donation body:**
+```json
+{
+  "name": "Jane Doe",
+  "email": "jane@example.com",
+  "amount": 25,
+  "message": "Happy to help!",
+  "isAnonymous": false,
+  "relatedIssue": null
+}
+```
+
+> **Note:** Stripe integration is Stripe-ready. The `stripePaymentIntentId` field stores the payment reference. In demo mode, donations are marked `completed` immediately without Stripe verification.
+
+---
+
+### Admin — `/api/admin` (Admin JWT required)
+
+All routes require a valid JWT **and** `role: "admin"`.
+
+#### Overview
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/admin/overview` | Full dashboard stats, recent activity, category/status breakdown |
+
+#### User Management
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/admin/users` | List users (search, role filter, pagination) |
+| GET | `/api/admin/users/:id` | User profile + their issues |
+| PATCH | `/api/admin/users/:id/role` | Promote/demote user role |
+| DELETE | `/api/admin/users/:id` | Delete user account |
+
+#### Issue Management
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/admin/issues` | List all issues (full filter + pagination) |
+| PATCH | `/api/admin/issues/:id` | Update status + add admin note |
+| DELETE | `/api/admin/issues/:id` | Delete single issue |
+| POST | `/api/admin/issues/bulk-status` | Bulk status update: `{ ids: [...], status: "Resolved" }` |
+| POST | `/api/admin/issues/bulk-delete` | Bulk delete: `{ ids: [...] }` |
+
+#### Donation Management
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/admin/donations` | List all donations with status filter + pagination |
+
+---
+
+## 🔐 Authentication & Authorization
+
+The API uses **JWT (JSON Web Tokens)**:
+
+1. User registers or logs in → receives a JWT (7-day expiry)
+2. Client stores token in `localStorage` as `pb_token`
+3. Protected requests include `Authorization: Bearer <token>` header
+4. `protect` middleware validates the token
+5. `adminOnly` middleware additionally checks `user.role === 'admin'`
+
+**Making an admin:** Update a user document in MongoDB:
+```javascript
+db.users.updateOne(
+  { email: "youremail@example.com" },
+  { $set: { role: "admin" } }
+)
+```
+Then log out and log back in to refresh your token.
+
+---
+
+## 📊 Data Models
+
+### Issue
+```
+title         String (required, max 200)
+description   String (required, max 2000)
+category      Enum (7 options)
+location      String (required)
+status        Enum: Open | In Progress | Pending Review | Resolved
+reporter      { name, email, userId }
+supporters    [ObjectId refs]
+supportCount  Number
+updates       [{ message, status, updatedBy, updatedAt }]
+resolvedAt    Date
+timestamps    createdAt, updatedAt
+```
+
+### User
+```
+name          String (required)
+email         String (unique, required)
+password      String (bcrypt hashed)
+role          Enum: user | admin
+timestamps    createdAt, updatedAt
+```
+
+### Donation
+```
+donor         { name, email, userId }
+amount        Number (min: 1)
+currency      String (default: usd)
+message       String (max 500)
+isAnonymous   Boolean
+status        Enum: pending | completed | failed | refunded
+stripePaymentIntentId  String
+relatedIssue  ObjectId ref (optional)
+timestamps    createdAt, updatedAt
+```
+
+---
+
+## 🛠️ Dependencies
+
+| Package | Version | Purpose |
+|---------|---------|---------|
+| `express` | ^4.18 | HTTP server framework |
+| `mongoose` | ^7.3 | MongoDB ODM |
+| `bcryptjs` | ^2.4 | Password hashing |
+| `jsonwebtoken` | ^9.0 | JWT auth tokens |
+| `cors` | ^2.8 | Cross-origin requests |
+| `dotenv` | ^16.0 | Environment variable loading |
+| `stripe` | ^12.9 | Payment processing (Stripe-ready) |
+| `nodemon` | ^3.0 | Dev auto-restart (devDependency) |
+
+---
+
+## 🌐 Deployment
+
+### Environment
+Set all variables from `.env` in your host's environment config.
+
+### MongoDB Atlas
+Use the Atlas connection string:
+```
+mongodb+srv://<user>:<password>@cluster.mongodb.net/<dbname>?retryWrites=true&w=majority
+```
+
+### Production Start
+```bash
+NODE_ENV=production node index.js
+```
+
+### Process Manager (recommended)
+```bash
+npm install -g pm2
+pm2 start index.js --name publicboard-api
+pm2 save
+```
+
+---
+
+## 🐛 Error Handling
+
+All endpoints return consistent error shapes:
+```json
+{ "message": "Human-readable error description" }
+```
+
+HTTP Status codes:
+- `200` — Success
+- `201` — Created
+- `400` — Bad request / validation error
+- `401` — Not authenticated
+- `403` — Forbidden (not admin)
+- `404` — Not found
+- `500` — Server error
